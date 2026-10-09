@@ -12,8 +12,21 @@ requires-python = ">=3.9"
 dependencies = ["numpy>=1.22", "scipy>=1.9", "pandas>=1.4"]
 
 [project.optional-dependencies]
-anndata = ["anndata>=0.8"]
-test = ["pytest", "anndata>=0.8"]
+# The core package needs only numpy/scipy/pandas and still runs on python 3.9.
+# The anndata extra is version-split because anndata <0.13 cannot WRITE the
+# pyarrow-backed string columns that pandas >=3.0 produces by default
+# (IORegistryError: no method for ArrowStringArray). anndata 0.13 fixes that
+# but requires python >=3.12, so the old floor is kept for older interpreters,
+# which in practice pair with pandas 2.
+anndata = [
+    "anndata>=0.8; python_version<'3.12'",
+    "anndata>=0.13.4; python_version>='3.12'",
+]
+test = [
+    "pytest",
+    "anndata>=0.8; python_version<'3.12'",
+    "anndata>=0.13.4; python_version>='3.12'",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]

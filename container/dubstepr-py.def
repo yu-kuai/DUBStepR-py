@@ -2,6 +2,11 @@ Bootstrap: docker
 From: mambaorg/micromamba:1.5.8
 
 # R DUBStepR 1.2.0 (reference implementation) + Python env for DUBStepR-py.
+#
+# anndata is pinned >=0.13.4 deliberately: pandas 3 defaults to
+# pyarrow-backed strings and anndata <0.13 cannot write them to h5ad
+# (IORegistryError: no method for ArrowStringArray). 0.13 needs python
+# >=3.12, which is why the python pin is 3.12.
 # Build: apptainer build dubstepr-py.sif container/dubstepr-py.def
 # Tip: export APPTAINER_TMPDIR/APPTAINER_CACHEDIR to local disk and
 #      APPTAINER_MKSQUASHFS_OPTIONS="-processors 8" to speed up the build.
@@ -9,7 +14,7 @@ From: mambaorg/micromamba:1.5.8
 %post
     micromamba install -y -n base -c conda-forge \
         r-base=4.4 r-seurat r-seuratobject r-qlcmatrix r-matrixcalc r-rann r-irlba r-matrix r-jsonlite \
-        python=3.12 numpy scipy pandas anndata pytest pip git
+        python=3.12 numpy scipy 'pandas>=3' 'anndata>=0.13.4' pytest pip git
     micromamba clean -a -y
     export PATH=/opt/conda/bin:$PATH
     git clone https://github.com/prabhakarlab/DUBStepR.git /opt/DUBStepR-R
