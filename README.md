@@ -13,10 +13,37 @@ and the PBMC 1k dataset from its vignette (see [Validation](#validation)).
 
 ## Installation
 
+**1. Clone the repository**
+
 ```bash
-pip install .            # numpy, scipy, pandas
-pip install ".[anndata]" # + AnnData helper
+git clone https://github.com/yu-kuai/DUBStepPy.git
+cd DUBStepPy
 ```
+
+**2. Create and activate a conda/mamba environment**
+
+```bash
+mamba env create -f environment.yml    # or: conda env create -f environment.yml
+mamba activate dubsteppy               # or: conda activate dubsteppy
+```
+
+This installs Python with numpy, scipy, pandas, anndata and pytest from conda-forge. To use an
+existing environment instead, skip this step; pip installs the dependencies in step 3.
+
+**3. Install dubsteppy**
+
+```bash
+pip install .                # add -e for an editable (development) install
+```
+
+**4. (Optional) Check the installation**
+
+```bash
+pytest tests                 # 8 tests, about 10 s; compares against R DUBStepR outputs
+python -c "import dubsteppy; print(dubsteppy.dubstepr(dubsteppy.pbmc_norm_small_data()).elbow_pt)"  # 17
+```
+
+Without conda: `pip install ".[anndata]"` into any Python >= 3.9 environment.
 
 ## Usage
 
