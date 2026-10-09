@@ -1,4 +1,4 @@
-"""dubsteppy — DUBStepR: correlation-based feature selection for single-cell RNA-seq data.
+"""DUBStepR-py — DUBStepR: correlation-based feature selection for single-cell RNA-seq data.
 
 Python port of the R package DUBStepR (https://github.com/prabhakarlab/DUBStepR),
 Ranjan et al., Nature Communications 2021 (doi:10.1038/s41467-021-26085-2).

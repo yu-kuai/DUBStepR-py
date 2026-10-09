@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import scipy.sparse as sp
 
-logger = logging.getLogger("dubsteppy")
+logger = logging.getLogger("dubstepr")
 
 
 def as_gene_matrix(data, gene_names=None, cell_names=None):

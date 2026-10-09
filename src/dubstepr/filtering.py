@@ -22,7 +22,7 @@ def load_gene_annotation(species: str = "human") -> pd.DataFrame:
     """
     if species not in SPECIES:
         raise ValueError(f"species must be one of {SPECIES}, got {species!r}")
-    path = resources.files("dubsteppy") / "data" / f"allgene_{species}.tsv.gz"
+    path = resources.files("dubstepr") / "data" / f"allgene_{species}.tsv.gz"
     with resources.as_file(path) as p:
         return pd.read_csv(p, sep="\t", dtype=str, keep_default_na=False, na_filter=False)
 

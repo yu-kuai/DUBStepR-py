@@ -1,20 +1,20 @@
 # Testing and validation
 
-dubsteppy is a pure-Python rewrite of the R package
+DUBStepR-py is a pure-Python rewrite of the R package
 [DUBStepR](https://github.com/prabhakarlab/DUBStepR) 1.2.0. It does not call R. To confirm that
 the rewrite is faithful, its output was compared with the original R package on 2 real reference
 datasets (pytest suite) and 16 additional datasets and parameter settings (stress test).
 
-**Result:** across all 18 comparisons, dubsteppy reproduces R DUBStepR's ranked feature genes,
+**Result:** across all 18 comparisons, DUBStepR-py reproduces R DUBStepR's ranked feature genes,
 elbow point and optimal feature set exactly. Correlation-range scores agree to within 2e-12. The
 density index agrees to within 1e-8 except at a single step in 5 runs, where R's approximate SVD
-(irlba) is inaccurate and dubsteppy matches the exact SVD (see
+(irlba) is inaccurate and DUBStepR-py matches the exact SVD (see
 [Density-index differences](#density-index-differences)).
 
 ## Environment
 
-All comparisons were run inside the Apptainer image built from `container/dubsteppy.def`
-(`container/dubsteppy.sif`, not tracked in git):
+All comparisons were run inside the Apptainer image built from `container/dubstepr-py.def`
+(`container/dubstepr-py.sif`, not tracked in git):
 
 | | version |
 |---|---|
@@ -32,7 +32,7 @@ package was written for.
 
 Every comparison checks each output of `DUBStepR()`:
 
-| output | R | dubsteppy | criterion |
+| output | R | DUBStepR-py | criterion |
 |---|---|---|---|
 | ranked feature genes | `corr.info$feature.genes` | `res.corr_info["feature.genes"]` | identical, same order |
 | correlation range | `corr.info$corr.range` | `res.corr_info["corr.range"]` | abs. diff |
@@ -70,7 +70,7 @@ R. The script:
 
 1. `make_jobs.py` generates 16 inputs from fixed seeds.
 2. `run_r.R` runs R DUBStepR on each.
-3. `compare.py` runs dubsteppy and compares the outputs.
+3. `compare.py` runs DUBStepR-py and compares the outputs.
 4. `irlba_first_step_check.R` investigates the density-index differences.
 
 Generated files go to `workdir` and are not committed. The table below is saved as
@@ -88,7 +88,7 @@ Generated files go to `workdir` and are not committed. The table below is saved 
 | `noopt` | full vignette, `optimise.features=FALSE` | ranking-only mode |
 | `synth400x2000`, `synth1200x3000`, `synth2500x4000` | simulated negative-binomial counts (4 / 8 / 12 clusters with 40 marker genes each, cell-size variation), log-normalised | data unlike PBMC; larger elbow (up to 29) and optimal sets (up to 379 genes) |
 
-**Results** (`ggc`, `elbow` and `opt` are shown as dubsteppy/R; `zdiff` is the max abs. diff of
+**Results** (`ggc`, `elbow` and `opt` are shown as DUBStepR-py/R; `zdiff` is the max abs. diff of
 corr.range; `di_reldiff` is the max rel. diff of the density index):
 
 | job | ggc genes | order identical | zdiff | elbow | optimal set | optimal identical | DI steps | di_reldiff |
@@ -113,7 +113,7 @@ corr.range; `di_reldiff` is the max rel. diff of the density index):
 † See below. In each of these runs only the first density-index step differs; every other step
 agrees to within about 1e-8.
 
-Runtime: R took 6 to 74 s per job; dubsteppy took 0.2 to 8 s.
+Runtime: R took 6 to 74 s per job; DUBStepR-py took 0.2 to 8 s.
 
 ### Density-index differences
 
@@ -121,29 +121,29 @@ In 5 runs the density index differs from R by 0.1 to 0.8%, always only at the **
 (the elbow-sized gene set, e.g. 11 to 18 genes). At that step Seurat's `RunPCA` asks irlba for
 `n_genes − 1` singular vectors of an `n_cells × n_genes` matrix. irlba is a truncated method and
 is unreliable when asked for almost all singular values (it warns *"You're computing too large a
-percentage of total singular values"*). dubsteppy computes the PCA exactly.
+percentage of total singular values"*). DUBStepR-py computes the PCA exactly.
 
 `tests/stress/irlba_first_step_check.R` recomputes that step in R both ways:
 
-| job | step (genes) | R with irlba (= DUBStepR) | R with exact `svd()` | dubsteppy | worst irlba singular-value error |
+| job | step (genes) | R with irlba (= DUBStepR) | R with exact `svd()` | DUBStepR-py | worst irlba singular-value error |
 |---|---|---|---|---|---|
 | synth400x2000 | 11 | 0.649847 | 0.652203 | 0.652203 | 0.6% |
 | rat | 18 | 0.401993 | 0.405094 | 0.405094 | 26.6% |
 | genes60 | 14 | 0.365625 | 0.366080 | 0.366080 | 7.3% |
 | synth1200x3000 | 18 | 0.722952 | 0.725863 | 0.725863 | 4.2% |
 
-dubsteppy matches R's exact SVD, so these differences are approximation error in the original
+DUBStepR-py matches R's exact SVD, so these differences are approximation error in the original
 implementation, not a porting error. In none of the 16 runs did this change the optimal feature
 set. In principle it could, if the first step's density index is within about 1% of the minimum.
 The pytest suite uses `rtol=1e-6` for the density index, and both reference datasets are within it.
 
 ## Not covered
 
-* **More than 10,000 cells.** DUBStepR then switches to approximate kNN (`error = 1`). dubsteppy
+* **More than 10,000 cells.** DUBStepR then switches to approximate kNN (`error = 1`). DUBStepR-py
   uses `scipy.spatial.cKDTree(eps=1)`. It has the same (1+eps) guarantee as RANN/ANN, but
   approximate neighbours can differ, so results are expected to be close but not identical. Not
   tested against R.
 * **Gene names containing `_`.** Seurat renames them and R DUBStepR then silently drops them from
-  the PCA; dubsteppy keeps them, so results differ by design.
+  the PCA; DUBStepR-py keeps them, so results differ by design.
 * `align_bins=True` (the corrected expression binning) deliberately differs from R and is
   therefore not compared.

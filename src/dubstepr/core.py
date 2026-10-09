@@ -75,7 +75,7 @@ def dubstepr(data, gene_names=None, min_cells=None, species="human", optimise_fe
     error
         Approximation tolerance for the kNN search (set to 1 for > 10000 cells, as in R).
     align_bins
-        See :func:`dubsteppy.ggc.get_ggc`. ``False`` reproduces R DUBStepR exactly.
+        See :func:`dubstepr.ggc.get_ggc`. ``False`` reproduces R DUBStepR exactly.
 
     Returns
     -------

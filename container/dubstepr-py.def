@@ -1,8 +1,8 @@
 Bootstrap: docker
 From: mambaorg/micromamba:1.5.8
 
-# R DUBStepR 1.2.0 (reference implementation) + Python env for dubsteppy.
-# Build: apptainer build dubsteppy.sif container/dubsteppy.def
+# R DUBStepR 1.2.0 (reference implementation) + Python env for DUBStepR-py.
+# Build: apptainer build dubstepr-py.sif container/dubstepr-py.def
 # Tip: export APPTAINER_TMPDIR/APPTAINER_CACHEDIR to local disk and
 #      APPTAINER_MKSQUASHFS_OPTIONS="-processors 8" to speed up the build.
 
@@ -24,4 +24,4 @@ From: mambaorg/micromamba:1.5.8
     export PYTHONNOUSERSITE=1
 
 %labels
-    Description R DUBStepR (commit 76aa39485742d5f5bcfb86346a8a1784ee08f6b9) + Python env for the dubsteppy port
+    Description R DUBStepR (commit 76aa39485742d5f5bcfb86346a8a1784ee08f6b9) + Python env for the DUBStepR-py port

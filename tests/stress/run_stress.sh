@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Stress test: compare dubsteppy with R DUBStepR on 16 generated datasets/parameter sets.
+# Stress test: compare DUBStepR-py with R DUBStepR on 16 generated datasets/parameter sets.
 # Usage (from the repo root): tests/stress/run_stress.sh [workdir]   (default: a new dir in $TMPDIR)
-# Runs inside container/dubsteppy.sif; generated inputs/outputs go to workdir (keep it off GPFS).
+# Runs inside container/dubstepr-py.sif; generated inputs/outputs go to workdir (keep it off GPFS).
 set -euo pipefail
 HERE=$(cd "$(dirname "$0")" && pwd)
-SIF=${SIF:-$HERE/../../container/dubsteppy.sif}
-WORK=${1:-$(mktemp -d "${TMPDIR:-/tmp}/dubsteppy_stress.XXXX")}
+SIF=${SIF:-$HERE/../../container/dubstepr-py.sif}
+WORK=${1:-$(mktemp -d "${TMPDIR:-/tmp}/dubstepr_py_stress.XXXX")}
 mkdir -p "$WORK"
 echo "workdir: $WORK"
 apptainer exec --cleanenv "$SIF" python -I "$HERE/make_jobs.py" "$WORK"

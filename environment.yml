@@ -1,4 +1,4 @@
-name: dubsteppy
+name: dubstepr-py
 channels:
   - conda-forge
 dependencies:

@@ -1,7 +1,7 @@
 import json, time, warnings, numpy as np, pandas as pd, scipy.io, scipy.sparse as sp, os, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
-import dubsteppy
+import dubstepr
 OUT = sys.argv[1].rstrip("/") + "/"
 rows = []
 for j in json.load(open(OUT + "jobs.json")):
@@ -15,8 +15,8 @@ for j in json.load(open(OUT + "jobs.json")):
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            res = dubsteppy.dubstepr(sp.csr_matrix(m), gene_names=genes, min_cells=mc, species=j["species"],
-                                     optimise_features=j["optimise"], k=j["k"], num_pcs=j["num_pcs"])
+            res = dubstepr.dubstepr(sp.csr_matrix(m), gene_names=genes, min_cells=mc, species=j["species"],
+                                    optimise_features=j["optimise"], k=j["k"], num_pcs=j["num_pcs"])
         py_err = None
     except Exception as e:
         py_err = repr(e)
