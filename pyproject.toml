@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dubsteppy"
+version = "1.2.0"
+description = "Correlation-based feature selection for single-cell RNA-seq data (Python port of R DUBStepR)"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+dependencies = ["numpy>=1.22", "scipy>=1.9", "pandas>=1.4"]
+
+[project.optional-dependencies]
+anndata = ["anndata>=0.8"]
+test = ["pytest", "anndata>=0.8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+dubsteppy = ["data/*.tsv.gz"]

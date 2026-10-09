@@ -1,0 +1,27 @@
+Bootstrap: docker
+From: mambaorg/micromamba:1.5.8
+
+# R DUBStepR 1.2.0 (reference implementation) + Python env for dubsteppy.
+# Build: apptainer build dubsteppy.sif container/dubsteppy.def
+# Tip: export APPTAINER_TMPDIR/APPTAINER_CACHEDIR to local disk and
+#      APPTAINER_MKSQUASHFS_OPTIONS="-processors 8" to speed up the build.
+
+%post
+    micromamba install -y -n base -c conda-forge \
+        r-base=4.4 r-seurat r-seuratobject r-qlcmatrix r-matrixcalc r-rann r-irlba r-matrix r-jsonlite \
+        python=3.12 numpy scipy pandas anndata pytest pip git
+    micromamba clean -a -y
+    export PATH=/opt/conda/bin:$PATH
+    git clone https://github.com/prabhakarlab/DUBStepR.git /opt/DUBStepR-R
+    git -C /opt/DUBStepR-R checkout 76aa39485742d5f5bcfb86346a8a1784ee08f6b9
+    R CMD INSTALL /opt/DUBStepR-R
+    rm -rf /opt/DUBStepR-R/.git
+
+%environment
+    export PATH=/opt/conda/bin:$PATH
+    export R_PROFILE_USER=/dev/null
+    export R_LIBS_USER=/dev/null
+    export PYTHONNOUSERSITE=1
+
+%labels
+    Description R DUBStepR (commit 76aa39485742d5f5bcfb86346a8a1784ee08f6b9) + Python env for the dubsteppy port
